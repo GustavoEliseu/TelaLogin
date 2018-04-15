@@ -1,0 +1,41 @@
+<resources>
+    <string name="app_name">TelaLogin</string>
+    <string-array name="lista_users">
+        <item>ufc@gmail.com</item>
+        <item>morreudetedio@gmail.com</item>
+        <item>seteaum@alemanha.br</item>
+        <item>algumemail@teste.com</item>
+        <item>semideias@idea.com</item>
+        <item>magazineluiza@hotmail.com</item>
+        <item>soseiquenadasei@gmail.com</item>
+        <item>senhafacil@gmail.com</item>
+        <item>gustavo_eliseu@hotmail.com</item>
+        <item>zecapagodinho@cerva.com</item>
+    </string-array>
+
+    <string-array name="lista_senhas">
+        <item>123456</item>
+        <item>morri</item>
+        <item>etetra</item>
+        <item>algumasenha</item>
+        <item>queroideias</item>
+        <item>submarino</item>
+        <item>seidetudo</item>
+        <item>senhafacil</item>
+        <item>123456</item>
+        <item>cerveja</item>
+    </string-array>
+
+    <string-array name="lista_nomes">
+        <item>ufc</item>
+        <item>morri</item>
+        <item>etetra</item>
+        <item>algumasenha</item>
+        <item>queroideias</item>
+        <item>submarino</item>
+        <item>seidetudo</item>
+        <item>senhafacil</item>
+        <item>123456</item>
+        <item>Jessé Gomes da Silva Filho</item>
+    </string-array>
+</resources>
