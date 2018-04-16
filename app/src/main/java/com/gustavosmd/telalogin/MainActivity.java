@@ -17,7 +17,10 @@ import android.widget.ToggleButton;
 import com.google.gson.Gson;
 
 import java.io.FileWriter;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -78,6 +81,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //Forma 1 - Juntando todos em uma String, separando os valores com characteres especificos, e utilizando Split para recupera-los.
 
         //verifica se listaUsuários já existe no SharedPreferences, caso não exista este é criado e adicionado.
+        /*
+
         if(getSharedPreferences("prefLogin", Activity.MODE_PRIVATE).getString("listaUsuarios", "").equals("")
                 ||getSharedPreferences("prefLogin", Activity.MODE_PRIVATE).getString("listaUsuarios", null)==null){
             for(int i=0;i<usuarios.length;i++){
@@ -99,13 +104,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String[] controleUsuarioI= controleTodosUsuarios[i].split(",");
             usuarios[i]=new User(controleUsuarioI[1],controleUsuarioI[2],controleUsuarioI[3]);
         }
+
+        */
         //Fim da Forma 1.
 
 
 
         //Forma 2 - Utilizando Set ou derivados para salvar um array de strings(formando uma pseudo tabela), pode se recuperar os valores de cada usuário separadamente.
 
-        /*if(getSharedPreferences("prefLogin", Activity.MODE_PRIVATE).getStringSet("listaDeUsuarios2",null )==null){
+        /*
+
+        if(getSharedPreferences("prefLogin", Activity.MODE_PRIVATE).getStringSet("listaDeUsuarios2",null )==null){
         String[] listaDeUsuarios= new String[getResources().getStringArray(R.array.lista_senhas).length];
         for(int i=0;i<usuarios.length;i++){
             listaDeUsuarios[i]=(i+1)+","+getResources().getStringArray(R.array.lista_users)[i]+","
@@ -124,15 +133,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             usuarios[i]=new User(UsuarioStr[1],UsuarioStr[2],UsuarioStr[3],Integer.parseInt(UsuarioStr[0]));
         }
         Arrays.sort(usuarios);
-        for(int i=0;i<usuarios.length;i++){
-            Log.e("teste user2: ",usuarios[i].getLogin());
-        }*/
+
+        */
         //Fim da forma 2
 
 
 
         //Forma 3 - Utilizar Gson para transformar um User[] em uma String.
-         /*if(getSharedPreferences("prefLogin", Activity.MODE_PRIVATE).getString("listaDeUsuarios3", "").equals("")
+         /*
+
+         if(getSharedPreferences("prefLogin", Activity.MODE_PRIVATE).getString("listaDeUsuarios3", "").equals("")
                 ||getSharedPreferences("prefLogin", Activity.MODE_PRIVATE).getString("listaDeUsuarios3", null)==null){
             usuarios= new User[getResources().getStringArray(R.array.lista_users).length];
             for(int i=0;i<getResources().getStringArray(R.array.lista_senhas).length;i++){
@@ -142,9 +152,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             salvarUsuarios3(usuarios);
         }
-        usuarios= lerUsuarios3();*/
+        usuarios= lerUsuarios3();
+
+        */
         //Fim da forma 3
 
+
+
+        //Forma 4 - Criar Set<String> para cada usuario no shared, com nomes como usuario1, usuario2... e um inteiro com o numero de usuarios.
+        if(getSharedPreferences("prefLogin", Activity.MODE_PRIVATE).getStringSet("usuarioNumero"+0,null )==null){
+            String[] listaDeUsuarios= new String[getResources().getStringArray(R.array.lista_senhas).length];
+            for(int y=0;y<usuarios.length;y++) {
+                //Adiciona-se um numero correspondente a ordem de cada string no array, pois a memória ira embaralhar o Set<String>
+                listaDeUsuarios = new String[]{"0 "+String.valueOf(y), "1 "+getResources().getStringArray(R.array.lista_users)[y],
+                        "2 "+getResources().getStringArray(R.array.lista_senhas)[y],
+                        "3 "+getResources().getStringArray(R.array.lista_nomes)[y]};
+                salvarUsuarios4(listaDeUsuarios,y);
+            }
+
+        }
+        String[] UsuarioStr=new String[4];
+        for(int i = 0;i<usuarios.length;i++){
+            UsuarioStr=lerUsuarios4(i);
+            reordenarStrings(UsuarioStr);
+
+            UsuarioStr[0]= UsuarioStr[0].replace("0 ","");
+            UsuarioStr[1]= UsuarioStr[1].replace("1 ","");
+            UsuarioStr[2]= UsuarioStr[2].replace("2 ","");
+            UsuarioStr[3]= UsuarioStr[3].replace("3 ","");
+
+            usuarios[i]=new User(UsuarioStr[1],UsuarioStr[2],UsuarioStr[3],Integer.parseInt(UsuarioStr[0]));
+            Log.e("Teste 4: ",UsuarioStr[0]+" "+ UsuarioStr[1]);
+        }
+        //Arrays.sort(usuarios);
 
     }
 
@@ -289,5 +329,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return usuarios;
     }
 
+    //Forma 4- Utilizar um Set<String> para cada usuario e um Int para quantidade de usuarios.
+    public void salvarUsuarios4(String[] usuarioX, int posicao){
+        HashSet<String> listaUsuarios=new HashSet<String>(Arrays.asList(usuarioX));
+        int mode = Activity.MODE_PRIVATE;
+        SharedPreferences prefLogin= getSharedPreferences("prefLogin",mode);
+        SharedPreferences.Editor editor= prefLogin.edit();
+        editor.putStringSet("usuarioNumero"+posicao,listaUsuarios);
+        editor.commit();
+    }
+
+    public String[] lerUsuarios4(int posicao){
+        int mode= Activity.MODE_PRIVATE;
+        SharedPreferences prefLogin=
+                getSharedPreferences("prefLogin", mode);
+        String key= "usuarioNumero"+posicao;
+        HashSet<String> meuHashSet=(HashSet<String>)prefLogin.getStringSet(key, null);
+        String[] listaDoUsuario= (String[])meuHashSet.toArray(new String[meuHashSet.size()]);
+        return listaDoUsuario;
+    }
+
+    public static void reordenarStrings(String[] minhaString)
+    {
+        Arrays.sort(minhaString);
+    }
 
 }
