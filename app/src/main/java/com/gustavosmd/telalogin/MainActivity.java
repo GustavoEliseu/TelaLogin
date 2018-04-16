@@ -39,16 +39,47 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+            //inicialização
+        loginBtn= (Button)findViewById(R.id.loginBtn);
+        toggleButton=(ToggleButton) findViewById(R.id.toggleBtnPassword);
+        limparBtn=(Button) findViewById(R.id.limparBtn);
+        emailEdit=(EditText) findViewById(R.id.emailEdit);
+        senhaEdit=(EditText)findViewById(R.id.passwordEdit);
+        String[] loginESenhaSalvos = lerLogin();
+
+        //recupera os dados salvos(ou resetados) dos EditText
+        emailEdit.setText(loginESenhaSalvos[0]);
+        senhaEdit.setText(loginESenhaSalvos[1]);
+        //recupera a posição anterior do botão salvar Senha
+        toggleButton.setChecked(Boolean.valueOf(loginESenhaSalvos[2]));
+
+        //Iniciando os Listeners.
+        loginBtn.setOnClickListener(this);
+        limparBtn.setOnClickListener(this);
+
+        //remove os valores de loginESenhaSalvos para facilitar a execução do GCC
+        for(int i = 0;i<loginESenhaSalvos.length;i++){
+            loginESenhaSalvos[i]=null;
+        }
+        loginESenhaSalvos=null;
+
+
+
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
         usuarios= new User[getResources().getStringArray(R.array.lista_senhas).length];
 
-    //Formas de se salvar/recuperar usuarios utilizando SharedPreferences
+        //Formas de se salvar/recuperar usuarios utilizando SharedPreferences
         //Deixar apenas uma descomentada
 
         //Forma 1 - Juntando todos em uma String, separando os valores com characteres especificos, e utilizando Split para recupera-los.
 
         //verifica se listaUsuários já existe no SharedPreferences, caso não exista este é criado e adicionado.
         if(getSharedPreferences("prefLogin", Activity.MODE_PRIVATE).getString("listaUsuarios", "").equals("")
-               ||getSharedPreferences("prefLogin", Activity.MODE_PRIVATE).getString("listaUsuarios", null)==null){
+                ||getSharedPreferences("prefLogin", Activity.MODE_PRIVATE).getString("listaUsuarios", null)==null){
             for(int i=0;i<usuarios.length;i++){
                 listaUsuarios=listaUsuarios+(i+1)+","+getResources().getStringArray(R.array.lista_users)[i]+","
                         +getResources().getStringArray(R.array.lista_senhas)[i]+","
@@ -115,46 +146,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //Fim da forma 3
 
 
-
-        //inicialização
-        loginBtn= (Button)findViewById(R.id.loginBtn);
-        toggleButton=(ToggleButton) findViewById(R.id.toggleBtnPassword);
-        limparBtn=(Button) findViewById(R.id.limparBtn);
-        emailEdit=(EditText) findViewById(R.id.emailEdit);
-        senhaEdit=(EditText)findViewById(R.id.passwordEdit);
-        String[] loginESenhaSalvos = lerLogin();
-
-
-
-        //recupera os dados salvos(ou resetados) dos EditText
-        emailEdit.setText(loginESenhaSalvos[0]);
-        senhaEdit.setText(loginESenhaSalvos[1]);
-        //recupera a posição anterior do botão salvar Senha
-        toggleButton.setChecked(Boolean.valueOf(loginESenhaSalvos[2]));
-
-        //inicialização do array de instancias de User.
-
-
-        loginBtn.setOnClickListener(this);
-        limparBtn.setOnClickListener(this);
-
-        //remove os valores de loginESenhaSalvos para facilitar a execução do GCC
-        for(int i = 0;i<loginESenhaSalvos.length;i++){
-            loginESenhaSalvos[i]=null;
-        }
-        loginESenhaSalvos=null;
-
-
-
-    }
-
-    @Override
-    public void onStart(){
-        super.onStart();
-        //usuarios= new User[getResources().getStringArray(R.array.lista_senhas).length];
-        /*for(int i=0;i<usuariosExistentes.length;i++) {
-            usuariosExistentes[i] = new User(getResources().getStringArray(R.array.lista_users)[i],getResources().getStringArray(R.array.lista_senhas)[i],getResources().getStringArray(R.array.lista_nomes)[i]);
-        }*/
     }
 
     //Apesar de não implementado, as formas de recuperar dados podem ser usadas ao efetuar o onClick
